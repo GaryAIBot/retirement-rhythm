@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retirement Rhythm</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero card">
+      <div>
+        <p class="eyebrow">Gentle daily structure</p>
+        <h1>Retirement Rhythm</h1>
+        <p class="sub">A calm full-stack day organiser for older adults, with grounded Swiss activity ideas and a saveable plan board.</p>
+      </div>
+      <div id="statusBadge" class="badge">Checking setup…</div>
+    </section>
+
+    <section class="card">
+      <p class="label">Build a day plan</p>
+      <form id="planForm">
+        <div class="form-grid">
+          <label>Name<input id="personInput" value="Martha" /></label>
+          <label>Location<input id="locationInput" value="Zurich" /></label>
+        </div>
+        <label>Focus<textarea id="focusInput" rows="3">Gentle activation, social contact, short walks, and realistic energy pacing</textarea></label>
+        <div class="actions">
+          <button type="submit">Create plan</button>
+          <button type="button" id="demoBtn" class="secondary">Run demo</button>
+          <button type="button" id="saveBtn" class="secondary">Save plan</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <p class="label">Plan summary</p>
+        <h2 id="headline">Waiting for a plan</h2>
+        <p id="summaryText" class="muted">The plan summary will appear here.</p>
+      </article>
+      <article class="card">
+        <p class="label">Swiss research signal</p>
+        <p id="researchText" class="muted">Grounded activity research will appear here.</p>
+      </article>
+    </section>
+
+    <section class="results-grid">
+      <article class="card"><p class="label">Daily rhythm</p><div id="rhythmList" class="rhythm-list"></div></article>
+      <article class="card"><p class="label">Activity ideas</p><ul id="ideasList" class="list"></ul></article>
+      <article class="card"><p class="label">Safety notes</p><ul id="safetyList" class="list"></ul></article>
+    </section>
+
+    <section class="card">
+      <p class="label">Sources</p>
+      <div id="sources" class="sources"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <div>
+          <p class="label">Saved plans</p>
+          <h2>Persistent retirement board</h2>
+        </div>
+        <button type="button" id="refreshSavedBtn" class="secondary">Refresh</button>
+      </div>
+      <div id="savedStatus" class="muted">Loading saved plans…</div>
+      <div id="savedList" class="saved-list"></div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
