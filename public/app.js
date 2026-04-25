@@ -2,6 +2,7 @@ const statusBadge = document.getElementById('statusBadge');
 const planForm = document.getElementById('planForm');
 const personInput = document.getElementById('personInput');
 const locationInput = document.getElementById('locationInput');
+const vibeInput = document.getElementById('vibeInput');
 const focusInput = document.getElementById('focusInput');
 const demoBtn = document.getElementById('demoBtn');
 const saveBtn = document.getElementById('saveBtn');
@@ -162,9 +163,10 @@ planForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const person = personInput.value.trim();
   const location = locationInput.value.trim();
+  const vibe = vibeInput.value.trim();
   const focus = focusInput.value.trim();
-  if (!person || !location || !focus) return;
-  await run(`/api/plan?person=${encodeURIComponent(person)}&location=${encodeURIComponent(location)}&focus=${encodeURIComponent(focus)}`);
+  if (!person || !location || !focus || !vibe) return;
+  await run(`/api/plan?person=${encodeURIComponent(person)}&location=${encodeURIComponent(location)}&focus=${encodeURIComponent(focus)}&vibe=${encodeURIComponent(vibe)}`);
 });
 
 demoBtn.addEventListener('click', async () => {

@@ -18,6 +18,7 @@ GOOGLE_SEARCH_URL = "https://generativelanguage.googleapis.com/v1beta/models/gem
 OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses"
 SYSTEM_PROMPT = """Du entwirfst freundliche, aktivierende und realistische Tagespläne auf Deutsch für Menschen in ihren 80ern in der Schweiz.
 Nutze nur die vom Nutzer angegebenen persönlichen Angaben und öffentlich passende lokale Kontexte. Erfinde keine privaten persönlichen Details und grabe nicht nach sensiblen Informationen.
+Berücksichtige ausdrücklich das gewählte Aktivitätsgefühl des Tages. Wenn sich jemand heute jünger, energievoller und unternehmungslustiger fühlt, darf der Plan lebendiger, aktiver und abwechslunsgreicher sein. Wenn sich jemand heute ruhiger fühlt, soll der Plan sanfter, langsamer und entlastender sein.
 Return valid JSON with keys:
 headline: string,
 summary: string,
@@ -87,12 +88,12 @@ def health() -> Dict[str, Any]:
 
 @app.get("/api/demo")
 async def demo() -> Dict[str, Any]:
-    return await build_plan("Susanne Schär", "Münchenstein", "Sanfte Aktivierung, soziale Kontakte, kleine Wege ausser Haus und ein ruhiger, strukturierter Tagesfluss")
+    return await build_plan("Susanne Schär", "Münchenstein", "Sanfte Aktivierung, soziale Kontakte, kleine Wege ausser Haus und ein ruhiger, strukturierter Tagesfluss", "Heute eher jung und unternehmungslustig")
 
 
 @app.get("/api/plan")
-async def plan(person: str, location: str = "Münchenstein", focus: str = "Den Tag freundlich, aktivierend und realistisch strukturieren") -> Dict[str, Any]:
-    return await build_plan(person.strip(), location.strip(), focus.strip())
+async def plan(person: str, location: str = "Münchenstein", focus: str = "Den Tag freundlich, aktivierend und realistisch strukturieren", vibe: str = "Ausgeglichen und locker") -> Dict[str, Any]:
+    return await build_plan(person.strip(), location.strip(), focus.strip(), vibe.strip())
 
 
 @app.get("/api/saved-plans")
@@ -137,12 +138,12 @@ async def save_plan(payload: SavePlanPayload) -> Dict[str, Any]:
     return {"ok": True, "id": record.id}
 
 
-async def build_plan(person: str, location: str, focus: str) -> Dict[str, Any]:
+async def build_plan(person: str, location: str, focus: str, vibe: str) -> Dict[str, Any]:
     google_key = get_required_env("GOOGLE_API_KEY")
     openai_key = get_required_env("OPENAI_API_KEY")
     research = await swiss_activity_research(location, focus, google_key)
-    plan = await generate_plan(person, location, focus, research, openai_key)
-    return {"person": person, "location": location, "focus": focus, "research": research, "plan": plan}
+    plan = await generate_plan(person, location, focus, vibe, research, openai_key)
+    return {"person": person, "location": location, "focus": focus, "vibe": vibe, "research": research, "plan": plan}
 
 
 async def swiss_activity_research(location: str, focus: str, api_key: str) -> Dict[str, Any]:
@@ -164,7 +165,7 @@ async def swiss_activity_research(location: str, focus: str, api_key: str) -> Di
     return {"summary": extract_gemini_text(data), "sources": extract_gemini_sources(data)[:8]}
 
 
-async def generate_plan(person: str, location: str, focus: str, research: Dict[str, Any], api_key: str) -> Dict[str, Any]:
+async def generate_plan(person: str, location: str, focus: str, vibe: str, research: Dict[str, Any], api_key: str) -> Dict[str, Any]:
     source_lines = "\n".join(f"- {item.get('title', 'Untitled')}: {item.get('url', '')}" for item in research.get("sources", []))
     payload = {
         "model": "gpt-4.1-mini",
@@ -202,7 +203,7 @@ async def generate_plan(person: str, location: str, focus: str, research: Dict[s
             {"role": "system", "content": SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": f"Person: {person}\nOrt: {location}\nFokus: {focus}\n\nÖffentlich passender Kontext: Die Person heisst Susanne Schär und lebt in Münchenstein. Personalisierung nur auf Basis dieses Namens, des Orts und der öffentlich sinnvollen lokalen Möglichkeiten. Keine privaten Behauptungen erfinden.\n\nRecherchezusammenfassung:\n{research.get('summary', '')}\n\nQuellen:\n{source_lines}\n\nGib nur JSON zurück, aber in deutscher Sprache.",
+                "content": f"Person: {person}\nOrt: {location}\nFokus: {focus}\nTagesgefühl / Aktivitätsniveau: {vibe}\n\nÖffentlich passender Kontext: Die Person heisst Susanne Schär und lebt in Münchenstein. Personalisierung nur auf Basis dieses Namens, des Orts und der öffentlich sinnvollen lokalen Möglichkeiten. Keine privaten Behauptungen erfinden.\n\nRecherchezusammenfassung:\n{research.get('summary', '')}\n\nQuellen:\n{source_lines}\n\nGib nur JSON zurück, aber in deutscher Sprache.",
             },
         ],
     }
