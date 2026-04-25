@@ -1,70 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Retirement Rhythm</title>
+  <title>Ruhestands-Rhythmus</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <main class="shell">
     <section class="hero card">
       <div>
-        <p class="eyebrow">Gentle daily structure</p>
-        <h1>Retirement Rhythm</h1>
-        <p class="sub">A calm full-stack day organiser for older adults, with grounded Swiss activity ideas and a saveable plan board.</p>
+        <p class="eyebrow">Sanfte Tagesstruktur</p>
+        <h1>Ruhestands-Rhythmus</h1>
+        <p class="sub">Ein ruhiger Tagesplaner für Susanne Schär in Münchenstein, mit passenden Schweizer Aktivitätsideen und speicherbaren Tagesplänen.</p>
       </div>
-      <div id="statusBadge" class="badge">Checking setup…</div>
+      <div id="statusBadge" class="badge">Prüfe Setup…</div>
     </section>
 
     <section class="card">
-      <p class="label">Build a day plan</p>
+      <p class="label">Tagesplan erstellen</p>
       <form id="planForm">
         <div class="form-grid">
-          <label>Name<input id="personInput" value="Martha" /></label>
-          <label>Location<input id="locationInput" value="Zurich" /></label>
+          <label>Name<input id="personInput" value="Susanne Schär" /></label>
+          <label>Ort<input id="locationInput" value="Münchenstein" /></label>
         </div>
-        <label>Focus<textarea id="focusInput" rows="3">Gentle activation, social contact, short walks, and realistic energy pacing</textarea></label>
+        <label>Fokus<textarea id="focusInput" rows="3">Sanfte Aktivierung, soziale Kontakte, kleine Wege ausser Haus und ein ruhiger, strukturierter Tagesfluss</textarea></label>
         <div class="actions">
-          <button type="submit">Create plan</button>
-          <button type="button" id="demoBtn" class="secondary">Run demo</button>
-          <button type="button" id="saveBtn" class="secondary">Save plan</button>
+          <button type="submit">Plan erstellen</button>
+          <button type="button" id="demoBtn" class="secondary">Beispiel laden</button>
+          <button type="button" id="saveBtn" class="secondary">Plan speichern</button>
         </div>
       </form>
     </section>
 
     <section class="grid">
       <article class="card">
-        <p class="label">Plan summary</p>
-        <h2 id="headline">Waiting for a plan</h2>
-        <p id="summaryText" class="muted">The plan summary will appear here.</p>
+        <p class="label">Tagesfokus</p>
+        <h2 id="headline">Warte auf einen Plan</h2>
+        <p id="summaryText" class="muted">Hier erscheint die Zusammenfassung des Tages.</p>
       </article>
       <article class="card">
-        <p class="label">Swiss research signal</p>
-        <p id="researchText" class="muted">Grounded activity research will appear here.</p>
+        <p class="label">Lokale Ideen</p>
+        <p id="researchText" class="muted">Hier erscheinen öffentlich passende Ideen aus der Recherche für die Region.</p>
       </article>
     </section>
 
     <section class="results-grid">
-      <article class="card"><p class="label">Daily rhythm</p><div id="rhythmList" class="rhythm-list"></div></article>
-      <article class="card"><p class="label">Activity ideas</p><ul id="ideasList" class="list"></ul></article>
-      <article class="card"><p class="label">Safety notes</p><ul id="safetyList" class="list"></ul></article>
+      <article class="card"><p class="label">Tagesrhythmus</p><div id="rhythmList" class="rhythm-list"></div></article>
+      <article class="card"><p class="label">Aktivierungsideen</p><ul id="ideasList" class="list"></ul></article>
+      <article class="card"><p class="label">Hinweise</p><ul id="safetyList" class="list"></ul></article>
     </section>
 
     <section class="card">
-      <p class="label">Sources</p>
+      <p class="label">Quellen</p>
       <div id="sources" class="sources"></div>
     </section>
 
     <section class="card">
       <div class="section-head">
         <div>
-          <p class="label">Saved plans</p>
-          <h2>Persistent retirement board</h2>
+          <p class="label">Gespeicherte Pläne</p>
+          <h2>Persönliche Planübersicht</h2>
         </div>
-        <button type="button" id="refreshSavedBtn" class="secondary">Refresh</button>
+        <button type="button" id="refreshSavedBtn" class="secondary">Aktualisieren</button>
       </div>
-      <div id="savedStatus" class="muted">Loading saved plans…</div>
+      <div id="savedStatus" class="muted">Lade gespeicherte Pläne…</div>
       <div id="savedList" class="saved-list"></div>
     </section>
   </main>

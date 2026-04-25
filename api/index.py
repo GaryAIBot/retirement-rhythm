@@ -16,14 +16,15 @@ app = FastAPI(title="Retirement Rhythm")
 
 GOOGLE_SEARCH_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 OPENAI_RESPONSES_URL = "https://api.openai.com/v1/responses"
-SYSTEM_PROMPT = """You design kind, activating, realistic daily plans for people in their 80s living in Switzerland.
+SYSTEM_PROMPT = """Du entwirfst freundliche, aktivierende und realistische Tagespläne auf Deutsch für Menschen in ihren 80ern in der Schweiz.
+Nutze nur die vom Nutzer angegebenen persönlichen Angaben und öffentlich passende lokale Kontexte. Erfinde keine privaten persönlichen Details und grabe nicht nach sensiblen Informationen.
 Return valid JSON with keys:
 headline: string,
 summary: string,
 rhythm: array of 4 to 7 objects with keys time, title, note,
 activity_ideas: array of 4 to 6 short strings,
 safety_notes: array of 2 to 4 short strings.
-Keep it warm, practical, and specific.
+Alles auf Deutsch, warm, praktisch und konkret.
 """
 
 
@@ -86,11 +87,11 @@ def health() -> Dict[str, Any]:
 
 @app.get("/api/demo")
 async def demo() -> Dict[str, Any]:
-    return await build_plan("Martha", "Zurich", "Gentle activation, social contact, and small outings")
+    return await build_plan("Susanne Schär", "Münchenstein", "Sanfte Aktivierung, soziale Kontakte, kleine Wege ausser Haus und ein ruhiger, strukturierter Tagesfluss")
 
 
 @app.get("/api/plan")
-async def plan(person: str, location: str = "Zurich", focus: str = "Keep the day active, warm, and realistic") -> Dict[str, Any]:
+async def plan(person: str, location: str = "Münchenstein", focus: str = "Den Tag freundlich, aktivierend und realistisch strukturieren") -> Dict[str, Any]:
     return await build_plan(person.strip(), location.strip(), focus.strip())
 
 
@@ -146,8 +147,9 @@ async def build_plan(person: str, location: str, focus: str) -> Dict[str, Any]:
 
 async def swiss_activity_research(location: str, focus: str, api_key: str) -> Dict[str, Any]:
     prompt = (
-        f"Search the web for gentle, realistic activities, outings, community options, senior programs, mobility-friendly ideas, "
-        f"and seasonal routines for people in their 80s in Switzerland, with emphasis on {location}. Focus: {focus}."
+        f"Suche im Web nach sanften, realistischen Aktivitäten, Ausflugsideen, Gemeinschaftsangeboten, Seniorinnen- und Seniorenprogrammen, "
+        f"mobilitätsfreundlichen Möglichkeiten und saisonalen Routinen für Menschen in ihren 80ern in der Schweiz, mit Schwerpunkt auf {location}. "
+        f"Ergänze nur öffentlich naheliegende lokale Kontexte, keine privaten persönlichen Details. Fokus: {focus}. Antworte auf Deutsch."
     )
     payload = {"tools": [{"google_search": {}}], "contents": [{"parts": [{"text": prompt}]}]}
     async with httpx.AsyncClient(timeout=45) as client:
@@ -200,7 +202,7 @@ async def generate_plan(person: str, location: str, focus: str, research: Dict[s
             {"role": "system", "content": SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": f"Person: {person}\nLocation: {location}\nFocus: {focus}\n\nGrounded Swiss research summary:\n{research.get('summary', '')}\n\nSources:\n{source_lines}\n\nReturn JSON only.",
+                "content": f"Person: {person}\nOrt: {location}\nFokus: {focus}\n\nÖffentlich passender Kontext: Die Person heisst Susanne Schär und lebt in Münchenstein. Personalisierung nur auf Basis dieses Namens, des Orts und der öffentlich sinnvollen lokalen Möglichkeiten. Keine privaten Behauptungen erfinden.\n\nRecherchezusammenfassung:\n{research.get('summary', '')}\n\nQuellen:\n{source_lines}\n\nGib nur JSON zurück, aber in deutscher Sprache.",
             },
         ],
     }

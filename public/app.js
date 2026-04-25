@@ -42,7 +42,7 @@ function renderList(el, items, empty) {
 function renderSources(items) {
   sources.innerHTML = '';
   if (!items || !items.length) {
-    sources.innerHTML = '<p class="muted">No sources yet.</p>';
+    sources.innerHTML = '<p class="muted">Noch keine Quellen.</p>';
     return;
   }
   for (const item of items) {
@@ -59,7 +59,7 @@ function renderSources(items) {
 function renderRhythm(items) {
   rhythmList.innerHTML = '';
   if (!items || !items.length) {
-    rhythmList.innerHTML = '<p class="muted">No day rhythm yet.</p>';
+    rhythmList.innerHTML = '<p class="muted">Noch kein Tagesrhythmus.</p>';
     return;
   }
   for (const item of items) {
@@ -73,17 +73,17 @@ function renderRhythm(items) {
 function renderSaved(items) {
   savedList.innerHTML = '';
   if (!items || !items.length) {
-    savedStatus.textContent = 'No saved plans yet.';
+    savedStatus.textContent = 'Noch keine gespeicherten Pläne.';
     return;
   }
-  savedStatus.textContent = `${items.length} saved plan${items.length === 1 ? '' : 's'} in Neon.`;
+  savedStatus.textContent = `${items.length} gespeicherte${items.length === 1 ? 'r Plan' : ' Pläne'} in Neon.`;
   for (const item of items) {
     const card = document.createElement('article');
     card.className = 'saved-card';
     card.innerHTML = `
       <div class="saved-meta">
         <strong>${item.personName} · ${item.location}</strong>
-        <span>${item.createdAt ? new Date(item.createdAt).toLocaleString() : ''}</span>
+        <span>${item.createdAt ? new Date(item.createdAt).toLocaleString('de-CH') : ''}</span>
       </div>
       <p><strong>${item.headline}</strong></p>
       <p class="muted">${item.summary}</p>
@@ -96,19 +96,19 @@ function renderPlan(data) {
   currentPlan = data;
   headline.textContent = data.plan.headline;
   summaryText.textContent = data.plan.summary;
-  researchText.textContent = data.research.summary || 'No research summary returned.';
+  researchText.textContent = data.research.summary || 'Keine Recherchezusammenfassung erhalten.';
   renderRhythm(data.plan.rhythm || []);
-  renderList(ideasList, data.plan.activity_ideas, 'No ideas returned.');
-  renderList(safetyList, data.plan.safety_notes, 'No safety notes returned.');
+  renderList(ideasList, data.plan.activity_ideas, 'Keine Ideen erhalten.');
+  renderList(safetyList, data.plan.safety_notes, 'Keine Hinweise erhalten.');
   renderSources(data.research.sources || []);
 }
 
 async function loadSaved() {
-  savedStatus.textContent = 'Loading saved plans…';
+  savedStatus.textContent = 'Lade gespeicherte Pläne…';
   try {
     const res = await fetch('/api/saved-plans');
     const data = await res.json();
-    if (!res.ok || data.ok === false) throw new Error(data.detail || 'Failed to load saved plans');
+    if (!res.ok || data.ok === false) throw new Error(data.detail || 'Gespeicherte Pläne konnten nicht geladen werden');
     renderSaved(data.items || []);
   } catch (error) {
     savedStatus.textContent = error.message;
@@ -117,26 +117,26 @@ async function loadSaved() {
 }
 
 async function run(url) {
-  setStatus('Building plan...');
+  setStatus('Erstelle Plan...');
   try {
     const res = await fetch(url);
     const data = await res.json();
-    if (!res.ok || data.ok === false) throw new Error(data.detail || 'Request failed');
+    if (!res.ok || data.ok === false) throw new Error(data.detail || 'Anfrage fehlgeschlagen');
     renderPlan(data);
-    setStatus('Ready');
+    setStatus('Bereit');
   } catch (error) {
-    setStatus('Failed', true);
-    headline.textContent = 'Request failed';
+    setStatus('Fehler', true);
+    headline.textContent = 'Anfrage fehlgeschlagen';
     summaryText.textContent = error.message;
   }
 }
 
 async function saveCurrentPlan() {
   if (!currentPlan?.plan?.headline) {
-    savedStatus.textContent = 'Create a plan first.';
+    savedStatus.textContent = 'Bitte zuerst einen Plan erstellen.';
     return;
   }
-  savedStatus.textContent = 'Saving plan…';
+  savedStatus.textContent = 'Speichere Plan…';
   try {
     const res = await fetch('/api/saved-plans', {
       method: 'POST',
@@ -150,8 +150,8 @@ async function saveCurrentPlan() {
       })
     });
     const data = await res.json();
-    if (!res.ok || data.ok === false) throw new Error(data.detail || 'Failed to save plan');
-    savedStatus.textContent = 'Saved plan to Neon.';
+    if (!res.ok || data.ok === false) throw new Error(data.detail || 'Plan konnte nicht gespeichert werden');
+    savedStatus.textContent = 'Plan in Neon gespeichert.';
     await loadSaved();
   } catch (error) {
     savedStatus.textContent = error.message;
@@ -184,9 +184,9 @@ refreshSavedBtn.addEventListener('click', async () => {
     const res = await fetch('/api/health');
     const data = await res.json();
     const good = data.hasOpenAI && data.hasGoogle && data.hasDatabase;
-    setStatus(good ? 'Ready' : 'Setup incomplete', !good);
+    setStatus(good ? 'Bereit' : 'Setup unvollständig', !good);
   } catch {
-    setStatus('Backend unavailable', true);
+    setStatus('Backend nicht erreichbar', true);
   }
   await loadSaved();
 })();
